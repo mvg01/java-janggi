@@ -10,10 +10,23 @@ import java.util.Map;
 public class GameContext {
     private final TurnManager turnManager;
     private final Board board;
+    private int gameId;
 
     public GameContext(final TurnManager turnManager, final Board board) {
         this.turnManager = turnManager;
         this.board = board;
+        this.gameId = 0;
+    }
+
+    public void assignGameId(final int gameId) {
+        if (this.gameId != 0) {
+            throw new IllegalStateException("이미 ID가 부여된 게임입니다.");
+        }
+        this.gameId = gameId;
+    }
+
+    public int getGameId() {
+        return gameId;
     }
 
     public boolean canContinueGame() {

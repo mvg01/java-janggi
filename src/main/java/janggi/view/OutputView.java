@@ -84,6 +84,12 @@ public final class OutputView {
         System.out.println("불러올 수 있는 게임이 없어 새 게임을 시작합니다.");
     }
 
+    public static void printGameDataList(List<Integer> gameDataList) {
+        for (Integer gameId : gameDataList) {
+            System.out.println(gameId + "마지막에 저장된 시간: ");
+        }
+    }
+
     public static void printInputFromPosition() {
         System.out.println("움직이고 싶은 기물의 위치를 n,n 형태로 입력해주세요.");
     }

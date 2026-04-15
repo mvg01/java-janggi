@@ -8,6 +8,7 @@ import janggi.domain.board.Board;
 import janggi.domain.team.TurnManager;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 public class GameRepository {
     private final DBConnector dbConnector;
@@ -16,12 +17,11 @@ public class GameRepository {
         this.dbConnector = dbConnector;
     }
 
-    public void saveGame(GameContext gameContext, final int gameId) {
+    public int saveGame(GameContext gameContext) {
         try (Connection connection = dbConnector.getConnection()) {
-            PieceDao.deletePiecesTable(connection, gameId);
-            GameDao.deleteGameTable(connection, gameId);
-            GameDao.insertCurrentTurn(connection, gameContext, gameId);
+            int gameId = GameDao.insertCurrentTurn(connection, gameContext);
             PieceDao.insertPiece(connection, gameContext, gameId);
+            return gameId;
         } catch (SQLException e) {
             throw new RuntimeException("데이터베이스 오류", e);
         }
@@ -49,6 +49,14 @@ public class GameRepository {
     public boolean hasGameData() {
         try (Connection connection = dbConnector.getConnection()) {
             return GameDao.hasGameData(connection);
+        } catch (SQLException e) {
+            throw new RuntimeException("데이터베이스 오류", e);
+        }
+    }
+
+    public List<Integer> printGameData() {
+        try (Connection connection = dbConnector.getConnection()) {
+            return GameDao.selectGameData(connection);
         } catch (SQLException e) {
             throw new RuntimeException("데이터베이스 오류", e);
         }

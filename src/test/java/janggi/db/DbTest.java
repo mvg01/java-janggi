@@ -26,7 +26,6 @@ public class DbTest {
 
     private final String TEST_URL = "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1";
     private final H2DBConnector h2DBConnector = new H2DBConnector(TEST_URL);
-    private final int FIX_GAME_ID = 1;
     private GameRepository gameRepository;
 
     @BeforeEach
@@ -35,7 +34,7 @@ public class DbTest {
         try (Connection connection = h2DBConnector.getConnection();
              Statement statement = connection.createStatement()) {
             statement.execute(
-                    "CREATE TABLE IF NOT EXISTS game (id INT PRIMARY KEY, current_turn VARCHAR(10));");
+                    "CREATE TABLE IF NOT EXISTS game (id INT AUTO_INCREMENT PRIMARY KEY, current_turn VARCHAR(10));");
             statement.execute(
                     "CREATE TABLE IF NOT EXISTS piece (id INT AUTO_INCREMENT PRIMARY KEY, game_id INT, position_row INT, position_column INT, piece_type VARCHAR(50), team_type VARCHAR(50), FOREIGN KEY (game_id) REFERENCES game(id));");
         }
@@ -52,15 +51,15 @@ public class DbTest {
 
     @Test
     @DisplayName("게임 저장 후 불러오면 현재 차례가 불러와진다.")
-    void success1() throws SQLException {
+    void success1() {
         Map<Position, Piece> positionPieces = new HashMap<>();
         Board board = new Board(positionPieces);
         TurnManager turnManager = new TurnManager();
         turnManager.changeTurn();
         GameContext gameContext = new GameContext(turnManager, board);
-        gameRepository.saveGame(gameContext, FIX_GAME_ID);
+        int gameId = gameRepository.saveGame(gameContext);
 
-        GameContext gameContextTest = gameRepository.loadPreviousGame(FIX_GAME_ID);
+        GameContext gameContextTest = gameRepository.loadPreviousGame(gameId);
         assertThat(gameContextTest.currentTeamType()).isEqualTo(turnManager.currentTeamType());
     }
 
@@ -76,9 +75,9 @@ public class DbTest {
         Map<Position, Piece> expected = Map.copyOf(positionPieces);
         Board board = new Board(positionPieces);
         GameContext gameContext = new GameContext(new TurnManager(), board);
-        gameRepository.saveGame(gameContext, FIX_GAME_ID);
+        int gameId = gameRepository.saveGame(gameContext);
 
-        GameContext gameContextTest = gameRepository.loadPreviousGame(FIX_GAME_ID);
+        GameContext gameContextTest = gameRepository.loadPreviousGame(gameId);
         Map<Position, Piece> actual = gameContextTest.getPositionPieceMap();
         assertThat(actual).containsAllEntriesOf(expected);
     }
