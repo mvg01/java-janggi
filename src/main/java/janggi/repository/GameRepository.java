@@ -54,7 +54,7 @@ public class GameRepository {
         }
     }
 
-    public List<Integer> printGameData() {
+    public List<String> printGameData() {
         try (Connection connection = dbConnector.getConnection()) {
             return GameDao.selectGameData(connection);
         } catch (SQLException e) {

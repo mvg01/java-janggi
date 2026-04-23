@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,8 +80,8 @@ public class GameDao {
         }
     }
 
-    public static List<Integer> selectGameData(Connection connection) {
-        final String sql = "SELECT id FROM game;";
+    public static List<String> selectGameData(Connection connection) {
+        final String sql = "SELECT id, saved_at FROM game;";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             return queryToList(statement);
         } catch (SQLException e) {
@@ -87,11 +89,15 @@ public class GameDao {
         }
     }
 
-    private static List<Integer> queryToList(PreparedStatement statement) {
+    private static List<String> queryToList(PreparedStatement statement) {
         try (ResultSet resultSet = statement.executeQuery()) {
-            List<Integer> list = new ArrayList<>();
+            List<String> list = new ArrayList<>();
             while (resultSet.next()) {
-                list.add(resultSet.getInt("id"));
+                int id = resultSet.getInt("id");
+                Timestamp savedAt = resultSet.getTimestamp("saved_at");
+                String formatted = savedAt.toLocalDateTime()
+                        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+                list.add(id + "번 게임 | 마지막 저장: " + formatted);
             }
             return list;
         } catch (SQLException e) {
