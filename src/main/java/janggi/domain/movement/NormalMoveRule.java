@@ -5,17 +5,18 @@ import janggi.domain.board.BoardMediator;
 import janggi.domain.team.TeamType;
 import java.util.List;
 
-public class SlidingMoveRule implements MoveRule {
+public class NormalMoveRule implements MoveRule {
 
-    private static final int MAX_DISTANCE = 10;
     private final Movement movementOrder;
+    private final int distance;
 
-    public SlidingMoveRule(Movement movementOrder) {
+    public NormalMoveRule(Movement movementOrder, int distance) {
         this.movementOrder = movementOrder;
+        this.distance = distance;
     }
 
     @Override
     public List<Position> execute(Position from, final TeamType teamType, final BoardMediator boardMediator) {
-        return movementOrder.calculateTraces(from, teamType, boardMediator, MAX_DISTANCE);
+        return movementOrder.calculateTraces(from, teamType, boardMediator, distance);
     }
 }
