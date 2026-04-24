@@ -55,9 +55,7 @@ public final class OutputView {
 
     public static void printSetupGuide(TeamType teamType) {
         System.out.println(teamType.getName() + "의 차림법을 입력해주세요.");
-        for (final String description : ELEPHANT_FORMATION_DESCRIPTIONS) {
-            System.out.println(description);
-        }
+        ELEPHANT_FORMATION_DESCRIPTIONS.forEach(System.out::println);
     }
 
     public static void printErrorMessage(String message) {
@@ -85,9 +83,7 @@ public final class OutputView {
     }
 
     public static void printGameDataList(List<String> gameDataList) {
-        for (String gameId : gameDataList) {
-            System.out.println(gameId);
-        }
+        gameDataList.forEach(System.out::println);
     }
 
     public static void printInputFromPosition() {

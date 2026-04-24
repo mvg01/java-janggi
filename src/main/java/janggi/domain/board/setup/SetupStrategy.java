@@ -1,5 +1,6 @@
 package janggi.domain.board.setup;
 
+import java.util.Arrays;
 import java.util.function.Supplier;
 
 public enum SetupStrategy {
@@ -21,12 +22,11 @@ public enum SetupStrategy {
     }
 
     public static SetupStrategy from(final int setupTypeNumber) {
-        for (SetupStrategy setup : SetupStrategy.values()) {
-            if (setup.setupTypeNumber == setupTypeNumber) {
-                return setup;
-            }
-        }
-        throw new IllegalArgumentException("입력은 " + MIN_SETUP_COMMAND + "에서 " + MAX_SETUP_COMMAND + "까지의 정수 값이어야 합니다.");
+        return Arrays.stream(SetupStrategy.values())
+                .filter(setup -> setup.setupTypeNumber == setupTypeNumber)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "입력은 " + MIN_SETUP_COMMAND + "에서 " + MAX_SETUP_COMMAND + "까지의 정수 값이어야 합니다."));
     }
 
 
